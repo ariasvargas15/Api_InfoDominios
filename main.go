@@ -18,30 +18,6 @@ import (
 	"github.com/likexian/whois-go"
 	"github.com/valyala/fasthttp"
 )
-// Insert a row into the "tbl_employee" table.
-/*	if _, err := db.Exec(
-		`INSERT INTO tbl_employee (full_name, department, designation, created_at, updated_at)
-		VALUES ('Irshad', 'IT', 'Product Manager', NOW(), NOW());`); err != nil {
-		log.Fatal(err)
-	}
-
-// Select Statement.
-	rows, err := db.Query("select employee_id, full_name FROM tbl_employee;")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer rows.Close()
-	for rows.Next() {
-		var employeeID int64
-		var fullName string
-		if err := rows.Scan(&employeeId, &fullName); err != nil {
-			log.Fatal(err)
-		}
-		fmt.Printf("Employee Id : %d \t Employee Name : %s\n", employeeId, fullName)
-	}
-*/
-
-
 
 type InfoServers struct{
 	Servers 			[]Server `json:"servers"`
@@ -84,25 +60,9 @@ func main(){
 	router := fasthttprouter.New()
 	router.GET("/search/:domain", BuscarDominio)
 	router.GET("/history", MostrarHistorial)
-	//router.GET("/prueba/:name", Prueba)
-
 
 	log.Fatal(fasthttp.ListenAndServe(":7000", router.Handler))
 }
-
-/*func Prueba(ctx *fasthttp.RequestCtx){
-	var ok bool
-	host, ok = ctx.UserValue("name").(string)
-
-	var ep []ssllabs.Endpoint
-	if ok {
-		ep = BuscarEndpoints()
-	}
-	servers := CrearServers(ep)
-	info.Servers = servers
-	json.NewEncoder(ctx).Encode(info)
-
-}*/
 
 func MostrarHistorial(ctx *fasthttp.RequestCtx){
 	rows, err := db.Query("select * FROM historial;")
@@ -143,7 +103,7 @@ func BuscarDominio(ctx *fasthttp.RequestCtx){
 		if lastQ != "" && !CompararFechas(lastQ){
 			SetDominio()
 		} else {
-			BuscarHTML(string(bodyR), ctx)
+			BuscarHTML(string(bodyR))
 			BuscarServers()
 			if lastQ != "" {
 				ValidarCambioServers()
@@ -266,7 +226,7 @@ func BorrarAntiguosServers() {
 	}
 }
 
-func BuscarHTML(body string, ctx *fasthttp.RequestCtx)  {
+func BuscarHTML(body string)  {
 	BuscarTitle(body)
 	BuscarImagen()
 }
@@ -371,7 +331,6 @@ func BuscarEndpoints() []ssllabs.Endpoint{
 		opts := make(map[string]string)
 		opts["fromCache"] = "on"
 		report, _ = c.Analyze(host, false, opts)
-		fmt.Println("paso")
 		fmt.Println(report.Endpoints)
 	}
 	return report.Endpoints
@@ -471,38 +430,38 @@ func BuscarImagen(){
 	}
 }
 
-//func KMP(cadena string, pattern string) int{
-//	n := len(cadena)
-//	m := len(pattern)
-//	tab := PrefixFunction(pattern)
-//	seen:=0
-//	for i:=0; i<n; i++{
-//		for seen > 0 && cadena[i] != pattern[seen] {
-//			seen = tab[seen-1]
-//		}
-//		if cadena[i] == pattern[seen] {
-//			seen++
-//		}
-//		if seen == m {
-//			return i
-//		}
-//	}
-//	return -1
-//}
-//
-//func PrefixFunction(cad string) []int{
-//	n := len(cad)
-//	pf := make([]int, n)
-//	pf[0] = 0
-//	j := 0
-//	for i:=0 ; i < n ; i++ {
-//		for j==1 && cad[i] != cad[j] {
-//			j = pf[j-1]
-//		}
-//		if cad[i] == cad[j]{
-//			j++
-//		}
-//		pf[i] = j
-//	}
-//	return pf
-//}
+/*func KMP(cadena string, pattern string) int{
+	n := len(cadena)
+	m := len(pattern)
+	tab := PrefixFunction(pattern)
+	seen:=0
+	for i:=0; i<n; i++{
+		for seen > 0 && cadena[i] != pattern[seen] {
+			seen = tab[seen-1]
+		}
+		if cadena[i] == pattern[seen] {
+			seen++
+		}
+		if seen == m {
+			return i
+		}
+	}
+	return -1
+}
+
+func PrefixFunction(cad string) []int{
+	n := len(cad)
+	pf := make([]int, n)
+	pf[0] = 0
+	j := 0
+	for i:=0 ; i < n ; i++ {
+		for j==1 && cad[i] != cad[j] {
+			j = pf[j-1]
+		}
+		if cad[i] == cad[j]{
+			j++
+		}
+		pf[i] = j
+	}
+	return pf
+}*/
